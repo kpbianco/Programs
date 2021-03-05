@@ -1,26 +1,5 @@
 package edu.nmsu.cs.webserver;
 
-/**
- * Web worker: an object of this class executes in its own new thread to receive and respond to a
- * single HTTP request. After the constructor the object executes on its "run" method, and leaves
- * when it is done.
- *
- * One WebWorker object is only responsible for one client connection. This code uses Java threads
- * to parallelize the handling of clients: each WebWorker runs in its own thread. This means that
- * you can essentially just think about what is happening on one client at a time, ignoring the fact
- * that the entirety of the webserver execution might be handling other clients, too.
- *
- * This WebWorker class (i.e., an object of this class) is where all the client interaction is done.
- * The "run()" method is the beginning -- think of it as the "main()" for a client interaction. It
- * does three things in a row, invoking three methods in this class: it reads the incoming HTTP
- * request; it writes out an HTTP header to begin its response, and then it writes out some HTML
- * content for the response content. HTTP requests and responses are just lines of text (in a very
- * particular format).
- * 
- * @author Jon Cook, Ph.D.
- *
- **/
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -40,19 +19,11 @@ public class WebWorker implements Runnable
 
 	private Socket socket;
 
-	/**
-	 * Constructor: must have a valid open socket
-	 **/
 	public WebWorker(Socket s)
 	{
 		socket = s;
 	}
 
-	/**
-	 * Worker thread starting point. Each worker handles just one HTTP request and then returns, which
-	 * destroys the thread. This method assumes that whoever created the worker created it with a
-	 * valid open socket object.
-	 **/
 	public void run()
 	{
 		System.err.println("Handling connection...");
@@ -72,6 +43,18 @@ public class WebWorker implements Runnable
 				writeHTTPHeader(os, "text/html", filename);
 				htmlWriter(os, filename);
 			}
+			if(filename.contains(".png")) {
+				writeHTTPHeader(os, "image/png", filename);
+				imageOutput(os, filename);
+			}
+			if(filename.contains(".jpg")) {
+				writeHTTPHeader(os, "image/jpg", filename);
+				imageOutput(os, filename);
+			}
+			if(filename.contains(".gif")) {
+				writeHTTPHeader(os, "image/gif", filename);
+				imageOutput(os, filename);
+			}
 
 			writeContent(os);
 			os.flush();
@@ -85,9 +68,6 @@ public class WebWorker implements Runnable
 		return;
 	}
 
-	/**
-	 * Read the HTTP request header.
-	 **/
 	private String readHTTPRequest(InputStream is)
 	{
 		String line;
@@ -136,14 +116,25 @@ public class WebWorker implements Runnable
 		return;
 	}
 
-	/**
-	 * Write the HTTP header lines to the client network connection.
-	 * 
-	 * @param os
-	 *          is the OutputStream object to write to
-	 * @param contentType
-	 *          is the string MIME content type (e.g. "text/html")
-	 **/
+
+	public void imageOutput(OutputStream os, String image) {
+		try {
+			BufferedInputStream is = new BufferedInputStream(new FileInputStream(image));
+			int currentLine = is.read();
+
+			while(currentLine != -1) {
+				os.write(currentLine);
+				currentLine = is.read(); 
+			}
+
+			is.close();
+			}catch(Exception e){
+				System.err.println("Output error: " + e);
+			}finally{ //here to avoid error with catch, not needed
+			}
+		return;
+	}
+
 	private void writeHTTPHeader(OutputStream os, String contentType, String file) throws Exception
 	{
 		int flag = 0;
@@ -174,13 +165,6 @@ public class WebWorker implements Runnable
 		return;
 	}
 
-	/**
-	 * Write the data content to the client network connection. This MUST be done after the HTTP
-	 * header has been written out.
-	 * 
-	 * @param os
-	 *          is the OutputStream object to write to
-	 **/
 	private void writeContent(OutputStream os) throws Exception
 	{
 		os.write("<html><head></head><body>\n".getBytes());
@@ -188,4 +172,4 @@ public class WebWorker implements Runnable
 		os.write("</body></html>\n".getBytes());
 	}
 
-} // end class
+}
