@@ -81,7 +81,7 @@ public class Circle2Test
 	@Test
 	public void TestScale()
 	{
-		circle1.scale(3);
+		circle1.scale(2);
 		Assert.assertTrue(circle1.radius == 6);
 	}
 
