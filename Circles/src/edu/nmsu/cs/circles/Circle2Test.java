@@ -1,22 +1,22 @@
 package edu.nmsu.cs.circles;
 
 /***
- * Example JUnit testing class for Circle1 (and Circle)
+ * Example JUnit testing class for Circle2 (and Circle)
  *
  * - must have your classpath set to include the JUnit jarfiles - to run the test do: java
- * org.junit.runner.JUnitCore Circle1Test - note that the commented out main is another way to run
+ * org.junit.runner.JUnitCore Circle2Test - note that the commented out main is another way to run
  * tests - note that normally you would not have print statements in a JUnit testing class; they are
  * here just so you see what is happening. You should not have them in your test cases.
  ***/
 
 import org.junit.*;
 
-public class Circle1Test
+public class Circle2Test
 {
 	// Data you need for each test case
-	private Circle1 circle1;
-	private Circle1 circle2;
-	private Circle1 circle3;
+	private Circle2 circle1;
+	private Circle2 circle2;
+	private Circle2 circle3;
 
 	//
 	// Stuff you want to do before each test case
@@ -25,9 +25,9 @@ public class Circle1Test
 	public void setup()
 	{
 		System.out.println("\nTest starting...");
-		circle1 = new Circle1(1, 2, 3);
-		circle2 = new Circle1(5, 6, 3);
-		circle3 = new Circle1(5, 5, 2.5);
+		circle1 = new Circle2(1, 2, 3);
+		circle2 = new Circle2(5, 6, 4);
+		circle3 = new Circle2(5, 6, 2.5);
 	}
 
 	//
@@ -63,31 +63,31 @@ public class Circle1Test
 		Assert.assertTrue(p.x == 0 && p.y == 1);
 	}
 
-	//tests to see if circle one violates circle2
+	//tests if circle one violates circle2
 	@Test
 	public void TestBound()
 	{
 		Assert.assertTrue(circle1.intersects(circle2));
 	}
 
-	//tests to see if circle one violates circle3
+	//tests if circle one violates circle3
 	@Test
-	public void TestBound3()
+	public void TestBound2()
 	{
 		Assert.assertFalse(circle1.intersects(circle3));
 	}
 
-	// tests if scaling works on circle
+	//tests sclaing works on circle 1
 	@Test
 	public void TestScale()
 	{
-		circle1.scale(2);
+		circle1.scale(3);
 		Assert.assertTrue(circle1.radius == 6);
 	}
 
 	/***
 	 * NOT USED public static void main(String args[]) { try { org.junit.runner.JUnitCore.runClasses(
-	 * java.lang.Class.forName("Circle1Test")); } catch (Exception e) { System.out.println("Exception:
+	 * java.lang.Class.forName("Circle2Test")); } catch (Exception e) { System.out.println("Exception:
 	 * " + e); } }
 	 ***/
 
